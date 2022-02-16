@@ -27,18 +27,26 @@
 // for i to size(nums):
 //      while j > 0
 
+int rowCol2Idx(int row, int col, int base)
+{
+    return (
+        (row * base - ((row - 1) * row) / 2) - (base - row + 1) + col
+    );
+}
+
 int numSubarrayProductLessThanK(int* nums, int numsSize, int k) {
     int count = 0;
-    int arr[numsSize][numsSize];
+    int max_size = 10000;
+    int arr1[max_size];
 
     for(int i = 0; i < numsSize; i++)
     {
         if (nums[i] < k)
         {
             count++;
-            arr[0][i] = nums[i];
+            arr1[rowCol2Idx(1, i + 1, numsSize)] = nums[i];
         } else {
-            arr[0][i] = k;
+            arr1[rowCol2Idx(1, i + 1, numsSize)] = k;
         }
     }
 
@@ -47,13 +55,13 @@ int numSubarrayProductLessThanK(int* nums, int numsSize, int k) {
         int j = 0;
         while(j <= (numsSize - interval))
         {
-            int sum = (arr[interval - 2][j] * nums[j + interval - 1]);
+            int sum = arr1[rowCol2Idx(interval - 2 + 1, j + 1, numsSize)] * nums[j + interval - 1];
             if (sum < k)
             {
                 count++;
-                arr[interval - 1][j] = sum;
+                arr1[rowCol2Idx(interval - 1 + 1, j + 1, numsSize)] = sum;
             } else {
-                arr[interval - 1][j] = k;
+                arr1[rowCol2Idx(interval - 1 + 1, j + 1, numsSize)] = k;
             }
             j += 1;
         }
@@ -64,7 +72,7 @@ int numSubarrayProductLessThanK(int* nums, int numsSize, int k) {
 
 int main()
 {
-    int arr[4] = {1, 2, 3, 4};
+    int arr[4] = {10,5,2,6};
     int out = numSubarrayProductLessThanK(arr, 4, 100);
     return 0;
 }
